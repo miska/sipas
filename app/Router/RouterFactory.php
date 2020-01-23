@@ -16,6 +16,7 @@ final class RouterFactory
     {
         $router = new RouteList;
         $router->addRoute('/<id \d+>', 'Paste:Show');
+        $router->addRoute('/', 'Paste:Create');
         return $router;
     }
 }
