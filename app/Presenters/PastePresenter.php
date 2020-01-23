@@ -3,6 +3,7 @@
 namespace App\Presenters;
 
 use Nette;
+use Tomaj\Form\Renderer\BootstrapRenderer;
 use Nette\Application\UI\Form;
 use GeSHi;
 
@@ -22,13 +23,14 @@ class PastePresenter extends Nette\Application\UI\Presenter {
 
     protected function createComponentPasteForm(): Form {
         $form = new Form;
+        $form->setRenderer(new BootstrapRenderer);
 
-        $form->addText('name', 'Author:')
-             ->setHtmlAttribute('placeholder', 'Name yourself')
-		     ->addRule(Form::MAX_LENGTH, 'Your name has to be shorter than 48 characters!', 48);
         $form->addText('title', 'Title:')
              ->setHtmlAttribute('placeholder', 'Name your paste')
 		     ->addRule(Form::MAX_LENGTH, 'Your post title has to be shorter than 48 characters!', 48);
+        $form->addText('name', 'Author:')
+             ->setHtmlAttribute('placeholder', 'Name yourself')
+		     ->addRule(Form::MAX_LENGTH, 'Your name has to be shorter than 48 characters!', 48);
         $form->addSelect('lang', 'Language:', $this->geshi->get_supported_languages(true))->setDefaultValue('text');
         $form->addTextArea('paste', 'Paste:')
              ->setRequired();

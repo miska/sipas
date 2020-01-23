@@ -20,7 +20,8 @@
 		"nette/utils": "^3.0",
 		"latte/latte": "^2.5",
 		"tracy/tracy": "^2.6",
-		"geshi/geshi": "^1.0"
+		"geshi/geshi": "^1.0",
+		"tomaj/nette-bootstrap-form": "^2.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.0"
