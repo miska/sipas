@@ -1,6 +1,6 @@
 {
 	"name": "Sipas",
-	"description": "Simple pastebin",
+	"description": "Simple Pastebin Service",
 	"keywords": ["pastebin"],
 	"type": "project",
 	"license": ["AGPL-3.0"],
