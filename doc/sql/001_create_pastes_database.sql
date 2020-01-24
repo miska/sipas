@@ -1,7 +1,7 @@
 CREATE TABLE pastes (
   `pid` char(16) NOT NULL,
   `title` char(48) DEFAULT '',
-  `name` char(48) DEFAULT '',
+  `author` char(48) DEFAULT '',
   `lang` char(48) DEFAULT 'text',
   `private` boolean NOT NULL,
   `created` int(10) NOT NULL,

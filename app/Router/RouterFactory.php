@@ -15,7 +15,7 @@ final class RouterFactory
     public static function createRouter(): RouteList
     {
         $router = new RouteList;
-        $router->addRoute('/<id \d+>', 'Paste:Show');
+        $router->addRoute('/<id [0-9a-f]+>', 'Paste:Show');
         $router->addRoute('/', 'Paste:Create');
         return $router;
     }
