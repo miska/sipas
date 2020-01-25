@@ -23,6 +23,25 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         $this->geshi = new \GeSHi();
     }
 
+    public function beforeRender() {
+        $this->template->addFilter('ago', function ($tme) {
+	    $diff = time() - $tme;
+	    if($diff < 120) {
+		return "$diff seconds ago";
+	    }
+	    $diff = round($diff / 60);
+	    if($diff < 120) {
+		return "$diff minutes ago";
+	    }
+	    $diff = round($diff / 60);
+	    if($diff < 48) {
+		return "$diff hours ago";
+	    }
+	    $diff = round($diff / 24);
+	    return "$diff days ago";
+        });
+    }
+
     private function bootstrapForm(Form $form): void {
         $renderer = $form->getRenderer();
         $renderer->wrappers['controls']['container'] = null;
@@ -119,8 +138,9 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         $paginator->setItemsPerPage(30); // items per page
         $paginator->setPage($page); // actual page number
 
-	$this->template->pastes = $this->pasteCollection->findPublicPastes($paginator->getLength(), $paginator->getOffset());
-	$this->template->paginator = $paginator;
+        $this->template->pastes = $this->pasteCollection->findPublicPastes($paginator->getLength(), $paginator->getOffset());
+        $this->template->paginator = $paginator;
+        $this->template->langs = $this->geshi->get_supported_languages(true);
     }
 
     public function renderCreate(): void {

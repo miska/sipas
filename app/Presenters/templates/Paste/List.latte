@@ -1,40 +1,43 @@
 {block content}
-<h1>Latest pastes</h1>
 
-<table class="table">
+<table class="table table-hover table-bordered">
+  <caption>Recent pastes</caption>
   <thead>
     <tr>
       <th scope="col">Title</th>
       <th scope="col">Author</th>
       <th scope="col">Language</th>
+      <th scope="col">Created</th>
     </tr>
   </thead>
   <tbody>
-	{foreach $pastes as $paste}
-      <tr>
-		<td><a n:href="Paste:Show $paste->pid">{$paste->title}</a></td>
-		<td>{$paste->author}</td>
-		<td>{$paste->lang}</td>
+    {foreach $pastes as $paste}
+      <tr onClick="window.location = {link Paste:Show $paste->pid}">
+        <td>{$paste->title}</td>
+        <td>{$paste->author}</td>
+        <td>{$langs[$paste->lang]}</td>
+        <td>{$paste->created|ago}</td>
       </tr>
-	{/foreach}
+    {/foreach}
   </tbody>
 </table>
 
-<div class="pagination">
-	{if !$paginator->isFirst()}
-		<a n:href="default, 1">First</a>
-		&nbsp;|&nbsp;
-		<a n:href="default, $paginator->page-1">Previous</a>
-		&nbsp;|&nbsp;
-	{/if}
-
-	Page {$paginator->page} of {$paginator->pageCount}
-
-	{if !$paginator->isLast()}
-		&nbsp;|&nbsp;
-		<a n:href="default, $paginator->page+1">Next</a>
-		&nbsp;|&nbsp;
-		<a n:href="default, $paginator->pageCount">Last</a>
-	{/if}
-</div>
-
+<nav aria-label="pagination">
+  <ul class="pagination">
+    {if !$paginator->isFirst()}
+    <li class="page-item">
+      <a class="page-link" n:href="Paste:List 1" tabindex="-1">First</a>
+    </li>
+    {/if}
+    {for $pg = max(1, $paginator->page - 5); $pg <= min($paginator->page + 5, $paginator->pageCount); $pg++ }
+    <li class="page-item {$paginator->page == $pg ? "active"}">
+      <a class="page-link" n:href="Paste:List $pg">{$pg}</a>
+    </li>
+    {/for}
+    {if !$paginator->isLast()}
+    <li class="page-item {$paginator->isLast() ? "disabled"}">
+      <a class="page-link" n:href="Paste:List $paginator->pageCount">Last</a>
+    </li>
+    {/if}
+  </ul>
+</nav>
