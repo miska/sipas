@@ -6,10 +6,11 @@ application:
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 
-
 session:
 	expiration: 14 days
-
+	savePath: "%tempDir%/sessions"
 
 services:
 	router: App\Router\RouterFactory::createRouter
+	- App\Model\PasteCollection
+

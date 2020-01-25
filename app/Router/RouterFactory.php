@@ -16,6 +16,7 @@ final class RouterFactory
     {
         $router = new RouteList;
         $router->addRoute('/<id [0-9a-f]+>', 'Paste:Show');
+        $router->addRoute('/list/[<page \d+>]', 'Paste:List');
         $router->addRoute('/', 'Paste:Create');
         return $router;
     }

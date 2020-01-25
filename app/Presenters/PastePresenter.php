@@ -6,13 +6,17 @@ use Nette;
 use Nette\Application\UI\Form;
 use GeSHi;
 
+use App\Model\PasteCollection;
+
 class PastePresenter extends Nette\Application\UI\Presenter {
     /** @var Nette\Database\Context */
     private $database;
     private $geshi;
+    private $pasteCollection;
 
-    public function __construct(Nette\Database\Context $database) {
+    public function __construct(Nette\Database\Context $database, PasteCollection $pasteCollection) {
         $this->database = $database;
+        $this->pasteCollection = $pasteCollection;
     }
 
     public function startup() {
@@ -55,37 +59,8 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         }
     }
 
-    private function getFreePid() {
-        $paste = True;
-        while($paste) {
-            $pid = sprintf("%x%x", rand(0,pow(2,32)),rand(0,pow(2,32)));
-            $paste = $this->database->table('pastes')->get($pid);
-        }
-        return $pid;
-    }
-
-    private function createPaste($data) {
-        $pid = $this->getFreePid();
-        $this->database->table('pastes')->insert([
-            'pid' => $pid,
-            'title' => $data->title,
-            'author' => $data->author,
-            'lang' => $data->lang,
-            'private' => $data->private,
-            'created' => time(),
-            'expire' => ($data->expire == 0) ? 0 : (time() + $data->expire),
-            'ip' => trim($_SERVER['REMOTE_ADDR'])
-        ]);
-        $this->database->table('paste_datas')->insert([
-            'pid' => $pid,
-            'data' => $data->paste
-        ]);
-        return $pid;
-    }
-
-
     public function createPasteFormSucceeded(Nette\Application\UI\Form $form, \stdClass $values): void {
-        if($pid = $this->createPaste($values)) {
+        if($pid = $this->pasteCollection->createPaste($values)) {
             $this->flashMessage('Your paste was successfully created!');
             $this->redirect('Paste:Show', $pid);
         } else {
@@ -137,6 +112,18 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         }
         $this->template->paste = $paste;
         $this->template->paste_data = $paste_data;
+    }
+
+    public function renderList(int $page = 1): void {
+        $pastesCount = $this->pasteCollection->getPublicPastesCount();
+
+        $paginator = new Nette\Utils\Paginator;
+        $paginator->setItemCount($pastesCount); // total articles count
+        $paginator->setItemsPerPage(30); // items per page
+        $paginator->setPage($page); // actual page number
+
+	$this->template->pastes = $this->pasteCollection->findPublicPastes($paginator->getLength(), $paginator->getOffset());
+	$this->template->paginator = $paginator;
     }
 
     public function renderCreate(): void {

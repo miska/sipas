@@ -1,0 +1,40 @@
+{block content}
+<h1>Latest pastes</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Author</th>
+      <th scope="col">Language</th>
+    </tr>
+  </thead>
+  <tbody>
+	{foreach $pastes as $paste}
+      <tr>
+		<td><a n:href="Paste:Show $paste->pid">{$paste->title}</a></td>
+		<td>{$paste->author}</td>
+		<td>{$paste->lang}</td>
+      </tr>
+	{/foreach}
+  </tbody>
+</table>
+
+<div class="pagination">
+	{if !$paginator->isFirst()}
+		<a n:href="default, 1">First</a>
+		&nbsp;|&nbsp;
+		<a n:href="default, $paginator->page-1">Previous</a>
+		&nbsp;|&nbsp;
+	{/if}
+
+	Page {$paginator->page} of {$paginator->pageCount}
+
+	{if !$paginator->isLast()}
+		&nbsp;|&nbsp;
+		<a n:href="default, $paginator->page+1">Next</a>
+		&nbsp;|&nbsp;
+		<a n:href="default, $paginator->pageCount">Last</a>
+	{/if}
+</div>
+
