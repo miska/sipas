@@ -1,8 +1,8 @@
 {block content}
 
-<div class="date">{$paste->created|date:'F j, Y'}</div>
+<div class="date">{$paste['created']|date:'F j, Y'}</div>
 
-<h1 n:block="title">{$paste->title}</h1>
+<h1 n:block="title">{$paste['title']}</h1>
 
-<div class="post">{$paste_data->data}</div>
+<div class="post">{$paste['data']}</div>
 {/block}

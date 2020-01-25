@@ -10,7 +10,7 @@ class PasteCollection {
     /** @var Nette\Database\Connection */
     private $database;
 
-    public function __construct(Nette\Database\Connection $database) {
+    public function __construct(Nette\Database\Context $database) {
         $this->database = $database;
     }
 
@@ -30,6 +30,15 @@ class PasteCollection {
             SELECT COUNT(*) FROM pastes
             WHERE private != True'
         );
+    }
+
+    public function getPaste(string $pid) {
+        $paste = $this->database->table('pastes')->get($pid);
+        if($paste) {
+            $paste = $paste->toArray();
+            $paste['data'] = $this->database->table('paste_datas')->get($pid)->data;
+        }
+        return $paste;
     }
 
     private function cleanup() {

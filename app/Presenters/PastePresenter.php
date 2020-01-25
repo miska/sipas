@@ -14,8 +14,7 @@ class PastePresenter extends Nette\Application\UI\Presenter {
     private $geshi;
     private $pasteCollection;
 
-    public function __construct(Nette\Database\Context $database, PasteCollection $pasteCollection) {
-        $this->database = $database;
+    public function __construct(PasteCollection $pasteCollection) {
         $this->pasteCollection = $pasteCollection;
     }
 
@@ -105,13 +104,11 @@ class PastePresenter extends Nette\Application\UI\Presenter {
     }
 
     public function renderShow(string $id): void {
-        $paste = $this->database->table('pastes')->get($id);
-        $paste_data = $this->database->table('paste_datas')->get($id);
+        $paste = $this->pasteCollection->getPaste($id);
         if (!$paste) {
             $this->error('Paste not found');
         }
         $this->template->paste = $paste;
-        $this->template->paste_data = $paste_data;
     }
 
     public function renderList(int $page = 1): void {
