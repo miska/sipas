@@ -14,3 +14,5 @@ services:
 	router: App\Router\RouterFactory::createRouter
 	- App\Model\PasteCollection
 
+constants:
+    TITLE: Sipas
