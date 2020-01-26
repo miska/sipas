@@ -4,5 +4,9 @@
 
 <h1 n:block="title">{$paste['title']}</h1>
 
-<div class="post">{$paste['data']}</div>
+<div class="post">{$geshi|noescape}</div>
+
+<style>
+{$geshi_css|noescape}
+</style>
 {/block}

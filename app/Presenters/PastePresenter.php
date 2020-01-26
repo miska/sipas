@@ -21,6 +21,7 @@ class PastePresenter extends Nette\Application\UI\Presenter {
     public function startup() {
         parent::startup();
         $this->geshi = new \GeSHi();
+        $this->geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
     }
 
     public function beforeRender() {
@@ -127,7 +128,11 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         if (!$paste) {
             $this->error('Paste not found');
         }
+        $this->geshi->set_language($paste['lang']);
+        $this->geshi->set_source($paste['data']);
+        $this->template->geshi_css = $this->geshi->get_stylesheet();
         $this->template->paste = $paste;
+        $this->template->geshi = $this->geshi->parse_code();
     }
 
     public function renderList(int $page = 1): void {
