@@ -7,8 +7,6 @@ CREATE TABLE pastes (
   `created` int(10) NOT NULL,
   `expire` int(10) NOT NULL DEFAULT 0,
   `ip` char(50) DEFAULT '',
-  `login` char(160) NOT NULL DEFAULT '',
-  `replyto` char(16) DEFAULT '',
   PRIMARY KEY (`pid`)
 );
 

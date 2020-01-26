@@ -48,20 +48,21 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         $renderer->wrappers['controls']['container'] = null;
         $renderer->wrappers['pair']['container'] = 'div class="form-group row"';
         $renderer->wrappers['pair']['.error'] = 'has-danger';
-        $renderer->wrappers['control']['container'] = 'div class=col-sm-9';
+        $renderer->wrappers['control']['container'] = 'div class="col-sm-9"';
         $renderer->wrappers['label']['container'] = 'div class="col-sm-3 col-form-label"';
         $renderer->wrappers['control']['description'] = 'span class=form-text';
         $renderer->wrappers['control']['errorcontainer'] = 'span class=form-control-feedback';
+        $renderer->wrappers['control']['.error'] = 'is-invalid';
         $renderer->wrappers['control']['.error'] = 'is-invalid';
 
         foreach ($form->getControls() as $control) {
             $type = $control->getOption('type');
             if ($type === 'button') {
-                $control->getControlPrototype()->addClass(empty($usedPrimary) ? 'btn btn-primary' : 'btn btn-secondary');
+                $control->getControlPrototype()->addClass(empty($usedPrimary) ? 'btn btn-primary float-right' : 'btn btn-secondary');
                 $usedPrimary = true;
 
             } elseif (in_array($type, ['text', 'textarea', 'select'], true)) {
-                $control->getControlPrototype()->addClass('form-control');
+                $control->getControlPrototype()->addClass('form-control w-100');
 
             } elseif ($type === 'file') {
                 $control->getControlPrototype()->addClass('form-control-file');
@@ -90,7 +91,6 @@ class PastePresenter extends Nette\Application\UI\Presenter {
 
     protected function createComponentPasteForm(): Form {
         $form = new Form;
-        $this->bootstrapForm($form);
 
         $form->addText('title', 'Title:')
              ->setHtmlAttribute('placeholder', 'Name your paste')
@@ -100,7 +100,7 @@ class PastePresenter extends Nette\Application\UI\Presenter {
 		     ->addRule(Form::MAX_LENGTH, 'Your name has to be shorter than 48 characters!', 48);
         $form->addSelect('lang', 'Language:', $this->geshi->get_supported_languages(true))->setDefaultValue('text');
         $form->addTextArea('paste', 'Paste:')
-             ->setRequired();
+             ->setRequired()->getControlPrototype()->addClass('min-vh-75');
         $form->addSelect('expire', 'Expire in', [
                 30 => "30 Minutes",
                 60 => "1 hour",
@@ -118,6 +118,7 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         $form->addCheckbox('private', 'Private paste');
         $form->addProtection('Time limit run out, please refresh the page first!');
         $form->addSubmit('send', 'Paste');
+        $this->bootstrapForm($form);
         $form->onSuccess[] = [$this, 'createPasteFormSucceeded'];
 
         return $form;

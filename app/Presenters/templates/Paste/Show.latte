@@ -1,10 +1,14 @@
 {block content}
 
-<div class="date">{$paste['created']|date:'F j, Y'}</div>
-
-<h1 n:block="title">{$paste['title']}</h1>
-
-<div class="post">{$geshi|noescape}</div>
+<div class="card">
+  <div n:block="title" class="card-header"><strong>{$paste['title']}</strong>{$paste['author'] ? " by "}<em>{$paste['author']}</em></div>
+  <div class="card-body">
+    <div class="post">{$geshi|noescape}</div>
+  </div>
+  <div class="card-footer text-muted text-center">
+    {$paste['created']|ago}
+  </div>
+</div>
 
 <style>
 {$geshi_css|noescape}
