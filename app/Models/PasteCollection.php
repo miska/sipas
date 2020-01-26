@@ -50,13 +50,13 @@ class PasteCollection {
     private function getFreePid() {
         $paste = True;
         while($paste) {
-            $pid = sprintf("%x%x", rand(0,pow(2,32)),rand(0,pow(2,32)));
+            $pid = sprintf("%4x%4x", rand(0,pow(2,32)),time());
             $paste = $this->database->table('pastes')->get($pid);
         }
         return $pid;
     }
 
-    private function createPaste($data) {
+    public function createPaste($data) {
         $pid = $this->getFreePid();
         $this->database->table('pastes')->insert([
             'pid' => $pid,
