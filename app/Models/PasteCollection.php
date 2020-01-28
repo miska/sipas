@@ -31,20 +31,27 @@ class PasteCollection {
             WHERE private != True'
         );
     }
+    public function getRawPaste(string $pid) {
+        $paste = $this->database->table('paste_datas')->get($pid);
+        if($paste) {
+            return $paste->data;
+        }
+        return $paste;
+    }
 
     public function getPaste(string $pid) {
         $paste = $this->database->table('pastes')->get($pid);
         if($paste) {
             $paste = $paste->toArray();
-            $paste['data'] = $this->database->table('paste_datas')->get($pid)->data;
+            $paste['data'] = $this->getRawPaste($pid);
         }
         return $paste;
     }
 
-    private function cleanup() {
+    public function cleanup() {
         $tme = time();
-        $this->database->query('DELETE FROM paste_datas WHERE pid in (SELECT pid FROM pastes WHERE expire < ?)', $tme);
-        $this->database->query('DELETE FROM pastes WHERE expire < ?', $tme);
+        $this->database->query('DELETE FROM paste_datas WHERE pid in (SELECT pid FROM pastes WHERE expire < ? AND expire !=0)', $tme);
+        $this->database->query('DELETE FROM pastes WHERE expire < ? AND expire != 0', $tme);
     }
 
     private function getFreePid() {

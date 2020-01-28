@@ -124,6 +124,19 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         return $form;
     }
 
+    public function renderCron(): void {
+        $paste = $this->pasteCollection->cleanup();
+        $this->sendJson(['run' => True]);
+    }
+
+    public function renderShowRaw(string $id): void {
+        $paste = $this->pasteCollection->getRawPaste($id);
+        if (!$paste) {
+            $this->error('Paste not found');
+        }
+        $this->sendResponse(new Nette\Application\Responses\TextResponse($paste));
+    }
+
     public function renderShow(string $id): void {
         $paste = $this->pasteCollection->getPaste($id);
         if (!$paste) {
