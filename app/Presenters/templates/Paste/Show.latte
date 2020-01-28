@@ -1,7 +1,14 @@
 {block content}
 
 <div class="card">
-  <div n:block="title" class="card-header"><strong>{$paste['title']}</strong>{$paste['author'] ? " by "}<em>{$paste['author']}</em></div>
+  <div class="card-header">
+    <span>
+      <strong n:block="title">{$paste['title']}</strong>
+      {$paste['author'] ? " by "}<em>{$paste['author']}</em></span>
+      <span class="float-right">
+        <a href="{link Paste:ShowRaw $paste['pid']}">Raw</a>
+      </span>
+    </div>
   <div class="card-body">
     <div class="post">{$geshi|noescape}</div>
   </div>

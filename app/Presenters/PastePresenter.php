@@ -39,7 +39,11 @@ class PastePresenter extends Nette\Application\UI\Presenter {
 		return "$diff hours ago";
 	    }
 	    $diff = round($diff / 24);
-	    return "$diff days ago";
+	    if($diff < 400) {
+		return "$diff days ago";
+	    }
+	    $diff = round($diff / 365.25);
+	    return "$diff years ago";
         });
     }
 
