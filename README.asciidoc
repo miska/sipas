@@ -1,0 +1,35 @@
+Sipas - Simple Pastebin Service
+-------------------------------
+
+This projects goal is to be a simple pastebin that depends just on basic LAMP
+stack so it is easy to deploy.
+
+Giving it a try
+~~~~~~~~~~~~~~~
+
+It requires PHP (tested on 7.X) and it is written using Nette framework and
+GeSHi for syntax highlighting. All dependencies (except from a database
+bindings of your choice) are wriitten in `composer.json` so you can install
+those simple by calling `composer update` in your checkout directory.
+
+What you need apart from dependencies is some database. You should configure
+one in `app/config/local.neon` file. For example like this:
+
+--------------------------------------------------------------------------------
+database:
+        dsn: 'sqlite:%appDir%/../datat/pastes.sqlite3'
+--------------------------------------------------------------------------------
+
+To fill database, use files from `doc/sql/` directory in the alphabetical
+sequence avoiding files starting with `9`, those introduce some sample data.
+
+Configuration
+~~~~~~~~~~~~~
+
+You can change the default identity to get some basic "branding" by adding the
+following lines into `app/config/local.neon` file.
+
+--------------------------------------------------------------------------------
+constants:
+    TITLE: SuperCoolPaste
+--------------------------------------------------------------------------------
