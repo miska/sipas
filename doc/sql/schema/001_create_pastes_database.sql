@@ -10,8 +10,6 @@ CREATE TABLE pastes (
   PRIMARY KEY (`pid`)
 );
 
--- statement
-
 CREATE TABLE paste_datas (
   `pid` char(16) NOT NULL,
   `data` longtext NOT NULL,
