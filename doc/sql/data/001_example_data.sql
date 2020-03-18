@@ -8,7 +8,7 @@ INSERT INTO pastes VALUES (
     'Bond, James Bond',
     'text',
     False,
-    1,
+    9999997,
     0,
     '127.0.0.1'),(
     '12345',
@@ -16,7 +16,7 @@ INSERT INTO pastes VALUES (
     'Richard McClintock',
     'text',
     False,
-    3601,
+    9999999,
     0,
     '127.0.0.1'),(
     '999',
@@ -24,7 +24,7 @@ INSERT INTO pastes VALUES (
     'Ghost',
     'text',
     False,
-    1,
+    9999998,
     3600,
     '127.0.0.1'),(
     'c',
@@ -32,7 +32,7 @@ INSERT INTO pastes VALUES (
     'Dennis Ritchie',
     'c',
     False,
-    1,
+    9999999,
     0,
     '127.0.0.1'
 );
