@@ -20,8 +20,8 @@ database:
         dsn: 'sqlite:%appDir%/../datat/pastes.sqlite3'
 --------------------------------------------------------------------------------
 
-To fill database, use files from `doc/sql/` directory in the alphabetical
-sequence avoiding files starting with `9`, those introduce some sample data.
+To fill database, use files from `doc/sql/schema` directory in the alphabetical
+sequence. If you need some sample data, you can use files from `doc/sql/data`.
 
 Configuration
 ~~~~~~~~~~~~~
@@ -31,5 +31,5 @@ following lines into `app/config/local.neon` file.
 
 --------------------------------------------------------------------------------
 constants:
-    TITLE: SuperCoolPaste
+    TITLE: 'My Super Cool Pastebin'
 --------------------------------------------------------------------------------
