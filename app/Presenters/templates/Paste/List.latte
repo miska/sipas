@@ -12,11 +12,11 @@
   </thead>
   <tbody>
     {foreach $pastes as $paste}
-      <tr onClick="window.location = {link Paste:Show $paste->pid}">
+      <tr onClick="window.location = {link Paste:Show "$paste->pid"}">
         <td>{$paste->title}</td>
         <td>{$paste->author}</td>
         <td>{$langs[$paste->lang]}</td>
-        <td>{$paste->created|ago}</td>
+        <td><span data-toggle="tooltip" data-placement="top" title="{$paste->created|date: '%F %T %z'}">{$paste->created|ago}</span></td>
       </tr>
     {/foreach}
   </tbody>

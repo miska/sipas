@@ -10,14 +10,11 @@
       </span>
     </div>
   <div class="card-body">
-    <div class="post">{$geshi|noescape}</div>
+    <div class="post">{$paste['geshi']|noescape}</div>
   </div>
   <div class="card-footer text-muted text-center">
-    {$paste['created']|ago}
+    <span data-toggle="tooltip" data-placement="top" title="{$paste['created']|date: '%F %T %z'}">{$paste['created']|ago}</span>
   </div>
 </div>
 
-<style>
-{$geshi_css|noescape}
-</style>
 {/block}

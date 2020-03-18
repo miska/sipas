@@ -67,9 +67,8 @@ class PastePresenter extends Nette\Application\UI\Presenter {
 
             } elseif (in_array($type, ['text', 'textarea', 'select'], true)) {
                 $control->getControlPrototype()->addClass('form-control w-100');
-
             } elseif ($type === 'file') {
-                $control->getControlPrototype()->addClass('form-control-file');
+                $control->getControlPrototype()->addClass('form-control-file w-100');
 
             } elseif (in_array($type, ['checkbox', 'radio'], true)) {
                 if ($control instanceof Nette\Forms\Controls\Checkbox) {
@@ -146,11 +145,10 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         if (!$paste) {
             $this->error('Paste not found');
         }
-        $this->geshi->set_language($paste['lang']);
-        $this->geshi->set_source($paste['data']);
-        $this->template->geshi_css = $this->geshi->get_stylesheet();
+        $geshi = new GeSHi($paste['data'], $paste['lang']);
+        $paste['geshi'] = $geshi->parse_code();
+        $this->template->extra_css = $geshi->get_stylesheet();
         $this->template->paste = $paste;
-        $this->template->geshi = $this->geshi->parse_code();
     }
 
     public function renderList(int $page = 1): void {
