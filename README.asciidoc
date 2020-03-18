@@ -33,3 +33,6 @@ following lines into `app/config/local.neon` file.
 constants:
     TITLE: 'My Super Cool Pastebin'
 --------------------------------------------------------------------------------
+
+You also want to put into your cron periodic fetch from https://your_URL/cron
+to automatically delete old pastes.
