@@ -1,0 +1,16 @@
+Sipas releases
+==============
+
+Version 1.1
+-----------
+
+* basic antispam
+* logo and favicon
+
+Version 1.0
+-----------
+
+* basic functionality works
+** creating posts
+** expiring posts
+** syntax highlighting using GeSHi
