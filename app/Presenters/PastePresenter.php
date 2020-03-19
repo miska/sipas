@@ -83,11 +83,16 @@ class PastePresenter extends Nette\Application\UI\Presenter {
     }
 
     public function createPasteFormSucceeded(Nette\Application\UI\Form $form, \stdClass $values): void {
-        if($pid = $this->pasteCollection->createPaste($values)) {
-            $this->flashMessage('Your paste was successfully created!');
+        $pid = null;
+        try {
+            $pid = $this->pasteCollection->createPaste($values);
+        } catch (\Exception $e) {
+            $this->flashMessage($e->getMessage(), 'warning');
+        }
+        if($pid) {
+            $this->flashMessage('Your paste was successfully created!','success');
             $this->redirect('Paste:Show', $pid);
         } else {
-            $this->flashMessage('Creating paste failed :-(');
             $this->redirect('Paste:Create');
         }
     }
@@ -135,15 +140,16 @@ class PastePresenter extends Nette\Application\UI\Presenter {
     public function renderShowRaw(string $id): void {
         $paste = $this->pasteCollection->getRawPaste($id);
         if (!$paste) {
-            $this->error('Paste not found');
+            $this->error('Paste not found!');
         }
         $this->sendResponse(new Nette\Application\Responses\TextResponse($paste));
     }
 
     public function renderShow(string $id): void {
-        $paste = $this->pasteCollection->getPaste($id);
-        if (!$paste) {
-            $this->error('Paste not found');
+        try {
+            $paste = $this->pasteCollection->getPaste($id);
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
         }
         $geshi = new GeSHi($paste['data'], $paste['lang']);
         $paste['geshi'] = $geshi->parse_code();

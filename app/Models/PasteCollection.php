@@ -44,8 +44,12 @@ class PasteCollection {
         if($paste) {
             $paste = $paste->toArray();
             $paste['data'] = $this->getRawPaste($pid);
+            if(!$paste['data'])
+                throw new \Exception('Paste data not found!');
+            return $paste;
+        } else {
+            throw new \Exception('Paste not found!');
         }
-        return $paste;
     }
 
     public function cleanup() {
@@ -84,7 +88,7 @@ class PasteCollection {
 
     public function createPaste($data) {
         if($this->isSpam($data->paste))
-            return null;
+            throw new \Exception('Your paste looks like a spam!');
         $pid = $this->getFreePid();
         $this->database->table('pastes')->insert([
             'pid' => $pid,

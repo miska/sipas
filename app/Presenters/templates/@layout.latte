@@ -46,6 +46,9 @@
 
 <!-- Here is where the child template content will be inserted -->
 <div class="container content my-3">
+{foreach $flashes as $flash}
+	<div class="flash alert alert-{$flash->type}" role="alert">{$flash->message}</div>
+{/foreach}
 	{include content}
 </div>
 
