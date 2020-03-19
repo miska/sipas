@@ -16,3 +16,8 @@ services:
 
 constants:
     TITLE: Sipas
+    SPAM:
+        density: 10
+        per_line: 2
+        forbidden_words:
+            - viagra

@@ -63,7 +63,28 @@ class PasteCollection {
         return $pid;
     }
 
+    public function isSpam($paste) {
+        $len = strlen($paste);
+        $links = substr_count($paste, 'http');
+        $lines = substr_count($paste, "\n");
+        $link_density = $links / ($len + 1);
+        $links_per_line = $links / ($lines + 1);
+        if(array_key_exists('forbidden_words', SPAM) && SPAM['forbidden_words']) {
+            foreach(SPAM['forbidden_words'] as $needle) {
+                if(stristr($paste, $needle))
+                    return True;
+            }
+        }
+        if((SPAM['density'] != 0 && SPAM['density'] < $link_density) ||
+           (SPAM['per_line'] != 0 && SPAM['per_line'] < $links_per_line)) {
+            return True;
+        }
+        return False;
+    }
+
     public function createPaste($data) {
+        if($this->isSpam($data->paste))
+            return null;
         $pid = $this->getFreePid();
         $this->database->table('pastes')->insert([
             'pid' => $pid,
