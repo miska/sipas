@@ -108,7 +108,7 @@ class PastePresenter extends Nette\Application\UI\Presenter {
 		     ->addRule(Form::MAX_LENGTH, 'Your name has to be shorter than 48 characters!', 48);
         $form->addSelect('lang', 'Language:', $this->geshi->get_supported_languages(true))->setDefaultValue('text');
         $form->addTextArea('paste', 'Paste:')
-             ->setRequired()->getControlPrototype()->addClass('min-vh-75');
+             ->setRequired()->getControlPrototype()->setRows('12');
         $form->addSelect('expire', 'Expire in', [
                 30 => "30 Minutes",
                 60 => "1 hour",
