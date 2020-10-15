@@ -106,9 +106,12 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         $form->addText('author', 'Author:')
              ->setHtmlAttribute('placeholder', 'Name yourself')
 		     ->addRule(Form::MAX_LENGTH, 'Your name has to be shorter than 48 characters!', 48);
-        $form->addSelect('lang', 'Language:', $this->geshi->get_supported_languages(true))->setDefaultValue('text');
-        $form->addTextArea('paste', 'Paste:')
-             ->setRequired()->getControlPrototype()->setRows('12');
+		$form->addSelect('lang', 'Language:', $this->geshi->get_supported_languages(true) + ['image' => 'Image'])->setDefaultValue('text');
+        $form->addTextArea('paste_text', 'Paste:')->getControlPrototype()->setRows('12');
+		$form->addUpload('paste_file', 'Paste:')
+		     ->addRule($form::MAX_FILE_SIZE, 'Maximum size is 2 MB', 2 * 1024 * 1024)
+			 ->addConditionOn($form['paste_text'], $form::MAX_LENGTH, 5)
+	         ->setRequired("Paste can't be empty, fill either the text or select a file to send.");
         $form->addSelect('expire', 'Expire in', [
                 30 => "30 Minutes",
                 60 => "1 hour",
@@ -138,11 +141,24 @@ class PastePresenter extends Nette\Application\UI\Presenter {
     }
 
     public function renderShowRaw(string $id): void {
-        $paste = $this->pasteCollection->getRawPaste($id);
-        if (!$paste) {
+        try {
+            $paste = $this->pasteCollection->getPaste($id);
+        } catch (\Exception $e) {
             $this->error('Paste not found!');
         }
-        $this->sendResponse(new Nette\Application\Responses\TextResponse($paste));
+        if($paste['lang'] == 'image') {
+            $this->sendResponse(new Nette\Application\Responses\CallbackResponse(
+                function (Nette\Http\IRequest $httpRequest, Nette\Http\IResponse $httpResponse) use (&$paste) {
+                    $mime = substr(strstr($paste['data'],';', True), 6);
+                    $content = base64_decode(strstr($paste['data'], ','));
+                    $httpResponse->setContentType($mime);
+                    $httpResponse->setHeader('Content-Disposition', 'inline; filename="' . $paste['title'] . '"');
+                    echo "$content";
+                }
+            ));
+        } else {
+            $this->sendResponse(new Nette\Application\Responses\TextResponse($data));
+        }
     }
 
     public function renderShow(string $id): void {
@@ -151,9 +167,13 @@ class PastePresenter extends Nette\Application\UI\Presenter {
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
-        $geshi = new GeSHi($paste['data'], $paste['lang']);
-        $paste['geshi'] = $geshi->parse_code();
-        $this->template->extra_css = $geshi->get_stylesheet();
+        if($paste['lang'] == "image") {
+            $paste["geshi"] = '<img src="' . $paste['data'] . '" alt="' . $paste['title'] . '" width="100%"/>';
+        } else {
+            $geshi = new GeSHi($paste['data'], $paste['lang']);
+            $paste['geshi'] = $geshi->parse_code();
+            $this->template->extra_css = $geshi->get_stylesheet();
+        }
         $this->template->paste = $paste;
     }
 
@@ -167,10 +187,10 @@ class PastePresenter extends Nette\Application\UI\Presenter {
 
         $this->template->pastes = $this->pasteCollection->findPublicPastes($paginator->getLength(), $paginator->getOffset());
         $this->template->paginator = $paginator;
-        $this->template->langs = $this->geshi->get_supported_languages(true);
+        $this->template->langs = $this->geshi->get_supported_languages(true) + ['image' => 'Image'];
     }
 
     public function renderCreate(): void {
-        $this->template->languages = $this->geshi->get_supported_languages(true);
+        $this->template->languages = $this->geshi->get_supported_languages(true) + ['image' => 'Image'];
     }
 }

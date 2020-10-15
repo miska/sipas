@@ -87,14 +87,31 @@ class PasteCollection {
     }
 
     public function createPaste($data) {
-        if($this->isSpam($data->paste))
+        $lang = $data->lang;
+		$title = $data->title;
+        if($data->paste_file->hasFile()) {
+            $paste = $data->paste_file->getContents();
+            if(!$data->title)
+                $title = $data->paste_file->getSanitizedName();
+            if($lang == 'text' && $data->paste_file->isImage()) {
+                $lang = 'image';
+                $paste = "data:" . $data->paste_file->getContentType() . ";base64," . base64_encode($paste);
+            }
+            if($lang == 'text') {
+                $lang = get_language_name_from_extension(
+                    substr(strrchr($data->paste_file->getName(), '.'), 1));
+            }
+        }
+		if($data->paste_text)
+			$paste = $data->paste_text;
+        if($this->isSpam($paste))
             throw new \Exception('Your paste looks like a spam!');
         $pid = $this->getFreePid();
         $this->database->table('pastes')->insert([
             'pid' => $pid,
-            'title' => $data->title,
+            'title' => $title,
             'author' => $data->author,
-            'lang' => $data->lang,
+            'lang' => $lang,
             'private' => $data->private,
             'created' => time(),
             'expire' => ($data->expire == 0) ? 0 : (time() + $data->expire),
@@ -102,7 +119,7 @@ class PasteCollection {
         ]);
         $this->database->table('paste_datas')->insert([
             'pid' => $pid,
-            'data' => $data->paste
+            'data' => $paste
         ]);
         return $pid;
     }
